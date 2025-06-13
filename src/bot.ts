@@ -67,6 +67,15 @@ async function chatWithDeepSeek(message: string, chatId: number): Promise<string
     }
 }
 
+bot.command('new', async (ctx: Context) => {
+    const chatId = ctx.chat!.id;
+    
+    conversationHistory.delete(chatId);
+    
+    await ctx.reply('🔄 New chat started! Previous conversation history has been cleared.');
+    console.log(`New chat started for ${chatId}`);
+});
+
 bot.on('text', async (ctx: Context) => {
     const chatId = ctx.chat!.id;
     const messageText = (ctx.message as any).text;

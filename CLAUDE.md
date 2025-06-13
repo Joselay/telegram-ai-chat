@@ -20,7 +20,7 @@ This is a TypeScript-based Telegram chatbot that integrates with the DeepSeek AI
 
 ### Key Architecture Patterns
 
-- **Polling-based Bot**: Uses `node-telegram-bot-api` with polling (not webhooks)
+- **Polling-based Bot**: Uses `telegraf` library with polling (not webhooks)
 - **Stateful Conversations**: Maintains last 20 messages per chat ID for context
 - **Error Handling**: Graceful degradation with fallback messages for API failures
 - **TypeScript Interfaces**: `ChatMessage` and `DeepSeekResponse` define data structures
@@ -28,8 +28,7 @@ This is a TypeScript-based Telegram chatbot that integrates with the DeepSeek AI
 ### Environment Variables Required
 
 - `TELEGRAM_BOT_TOKEN` - Telegram bot API token
-- `DEEPSEEK_API_KEY` - DeepSeek AI API key  
-- `TELEGRAM_CHAT_ID` - Target chat ID (though bot responds to all chats)
+- `DEEPSEEK_API_KEY` - DeepSeek AI API key
 
 ### API Integration Details
 
