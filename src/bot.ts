@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import TelegramBot from 'node-telegram-bot-api';
+import { Telegraf, Context } from 'telegraf';
 import axios, { AxiosResponse } from 'axios';
 
 dotenv.config();
@@ -7,7 +7,7 @@ dotenv.config();
 const token: string = process.env.TELEGRAM_BOT_TOKEN!;
 const deepseekApiKey: string = process.env.DEEPSEEK_API_KEY!;
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new Telegraf(token);
 
 interface ChatMessage {
     role: 'user' | 'assistant' | 'system';
@@ -67,27 +67,32 @@ async function chatWithDeepSeek(message: string, chatId: number): Promise<string
     }
 }
 
-bot.on('message', async (msg: TelegramBot.Message) => {
-    const chatId = msg.chat.id;
-    const messageText = msg.text;
+bot.on('text', async (ctx: Context) => {
+    const chatId = ctx.chat!.id;
+    const messageText = (ctx.message as any).text;
 
     if (!messageText) return;
 
     console.log(`Received message from ${chatId}: ${messageText}`);
 
-    bot.sendChatAction(chatId, 'typing');
+    await ctx.sendChatAction('typing');
 
     try {
         const aiResponse = await chatWithDeepSeek(messageText, chatId);
-        await bot.sendMessage(chatId, aiResponse);
+        await ctx.reply(aiResponse);
     } catch (error) {
         console.error('Bot Error:', error);
-        await bot.sendMessage(chatId, 'Sorry, something went wrong. Please try again.');
+        await ctx.reply('Sorry, something went wrong. Please try again.');
     }
 });
 
-bot.on('polling_error', (error: Error) => {
-    console.error('Polling error:', error);
+bot.catch((err: any, ctx: Context) => {
+    console.error('Bot error:', err);
 });
 
+bot.launch();
+
 console.log('Telegram AI Chat Bot is running...');
+
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
