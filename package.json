@@ -2,9 +2,13 @@
   "name": "telegram-ai-chat",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/bot.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "start": "ts-node src/bot.ts",
+    "start": "node dist/bot.js",
+    "start:dev": "ts-node src/bot.ts",
     "build": "tsc",
     "dev": "ts-node --watch src/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
